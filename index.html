@@ -85,7 +85,7 @@
             margin-left: 10px;
             vertical-align: middle;
         }
-        /* 自定义弹窗通用样式 - 放大尺寸+宽松内边距 */
+        /* 自定义弹窗通用样式 - 放大尺寸+宽松内边距+垂直滚动 */
         .custom-modal {
             position: fixed;
             top: 50%;
@@ -102,6 +102,19 @@
             max-width: 90%; /* 放大弹窗宽度 */
             width: 450px; /* 固定最大宽度，避免太窄 */
             line-height: 1.8; /* 增加行间距，文字不拥挤 */
+            /* 垂直滚动核心设置 */
+            max-height: 80vh; /* 限制最大高度为视口80% */
+            overflow-y: auto; /* 内容溢出时显示垂直滚动条 */
+            overflow-x: hidden; /* 禁止横向滚动 */
+            overscroll-behavior: contain; /* 阻止滚动穿透背景页面 */
+            -webkit-overflow-scrolling: touch; /* 移动端平滑滚动 */
+        }
+        /* 弹窗内图片样式 - 置顶适配 */
+        .modal-img {
+            width: 100%;
+            border-radius: 8px;
+            margin: 0 0 15px 0; /* 只保留下方间距，放在最上方 */
+            border: 1px solid #00bfff;
         }
         /* 弹窗关闭按钮样式 */
         .modal-close {
@@ -294,11 +307,15 @@
     <!-- 实时时间显示 - 右上角不碍眼位置 -->
     <div id="time-display"></div>
 
-    <!-- ios科技自定义弹窗 -->
+    <!-- ios科技自定义弹窗 - 图片置顶+滚动条 -->
     <div class="custom-modal" id="techModal">
+        <!-- 图片移到弹窗最上方 -->
+        <img src="https://i.postimg.cc/j5fcVF0s/IMG-3588.jpg" alt="ios科技展示图" class="modal-img">
         支持台服/國服/國際服<br>
-        ⚠️僅支持ios越獄設備15～16.5系統⚠️<br>
-        1. 穩定人物+物資透視功能<br>
+        ⚠️僅支持多巴胺roothide設備⚠️<br>
+        ⚙️系統:15～16.5.1<br>
+        🔧功能:人物 骨骼 武器 角色 隊編 物資透視<br>
+        1. 獨家穩定代碼結構與市面上科技不同<br>
         2. 聯繫客服購買+教學<br>
         3. 價格：天15 / 週90 / 月250<br>
         非卡密原因售出不退換<br>
@@ -307,7 +324,7 @@
         <button class="modal-close" id="techModalClose">關閉</button>
     </div>
 
-    <!-- 下单须知自定义弹窗 -->
+    <!-- 下单须知自定义弹窗 - 滚动条 -->
     <div class="custom-modal" id="noticeModal">
         <strong>下單須知(必看)：</strong><br>
         1. 確認服務需求與設備型號<br>
