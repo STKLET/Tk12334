@@ -13,8 +13,11 @@
         body {
             min-height: 100vh;
             background: #1a1a2e;
-            overflow: hidden;
+            /* 開啟垂直滾動，移除 overflow:hidden */
+            overflow-y: auto;
+            overflow-x: hidden;
             font-family: "Microsoft YaHei", sans-serif;
+            padding-bottom: 50px; /* 底部留白防止內容貼邊 */
         }
         /* 下雪特效容器 */
         #snow-container {
@@ -56,12 +59,23 @@
             z-index: 2;
             text-align: center;
             padding-top: 80px;
+            margin-bottom: 30px;
         }
         .title {
             color: #ffffff;
             font-size: 36px;
             font-weight: bold;
             text-shadow: 0 0 10px #00bfff;
+        }
+        /* 圆形头像样式 */
+        .avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin: 15px auto;
+            border: 3px solid #00bfff;
+            box-shadow: 0 0 12px #00bfff;
+            object-fit: cover;
         }
         .subtitle {
             color: #00bfff;
@@ -78,7 +92,7 @@
             gap: 20px;
             width: 80%;
             max-width: 400px;
-            margin: 60px auto 0;
+            margin: 0 auto 50px;
         }
         /* 圆角按钮样式 */
         .custom-btn {
@@ -100,9 +114,54 @@
             position: relative;
             z-index: 2;
             text-align: center;
-            margin-top: 80px;
+            margin-top: 20px;
             color: #cccccc;
             font-size: 18px;
+        }
+        /* 圖片影片彈層樣式 - 支持滾動 */
+        .media-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 999;
+            display: none;
+            align-items: flex-start; /* 改為頂部對齊，配合滾動 */
+            justify-content: center;
+            padding: 30px 20px;
+            overflow-y: auto; /* 彈層開啟垂直滾動 */
+        }
+        .media-modal.active {
+            display: flex;
+        }
+        .media-container {
+            width: 100%;
+            max-width: 500px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .media-item {
+            width: 100%;
+            border-radius: 10px;
+            border: 2px solid #00bfff;
+            box-shadow: 0 0 10px #00bfff;
+        }
+        .close-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            background: #ff3333;
+            border: none;
+            border-radius: 50%;
+            color: #ffffff;
+            font-size: 20px;
+            cursor: pointer;
+            z-index: 1000; /* 確保關閉按鈕在最上層 */
         }
     </style>
 </head>
@@ -112,20 +171,32 @@
     <!-- 标题组 -->
     <div class="title-group">
         <h1 class="title">三角洲DFM手遊</h1>
+        <img src="https://i.postimg.cc/HLJH5k2B/50208EAB-3208-43BF-8854-1515047CC556-watermark.jpg" alt="头像" class="avatar">
         <p class="subtitle">護航/科技店舖</p>
         <p class="subtitle">複製連結🔗到瀏覽器打開</p>
     </div>
     <!-- 按钮组 -->
     <div class="btn-group">
-        <button class="custom-btn" id="btn1">航天/監獄絕密掛護</button>
-        <button class="custom-btn" id="btn2">ios科技販售</button>
-        <button class="custom-btn" id="btn3">下單須知(必看)</button>
+        <button class="custom-btn" id="btn1">航天/監獄絕密掛護🥷</button>
+        <button class="custom-btn" id="btn2">ios科技販售🧑‍💻</button>
+        <button class="custom-btn" id="btn3">下單須知(必看)❗️</button>
+        <!-- 新增圖片影片按鈕 -->
+        <button class="custom-btn" id="mediaBtn">科技展示🎁</button>
     </div>
     <!-- 联系方式 -->
     <div class="contact">
-        <p>聯繫方式1：TG:@kk112240</p>
-        <p>聯繫方式2：QQ:2737547844</p>
-
+        <p>聯繫方式1：✈️TG:@kk112240</p>
+        <p>聯繫方式2：🐧QQ:2737547844</p>
+    </div>
+    <!-- 圖片影片彈層 -->
+    <div class="media-modal" id="mediaModal">
+        <button class="close-btn" id="closeBtn">×</button>
+        <div class="media-container">
+            <!-- 示例圖片，替換為你的圖片鏈接 -->
+            <img src="https://i.postimg.cc/0jH3fpcM/IMG-0013.jpg" alt="示例圖片1" class="media-item">
+            <img src="https://i.postimg.cc/nrw5kv0M/IMG-0004.jpg" alt="示例圖片2" class="media-item">
+           
+ </div>
     </div>
     <script>
         // 动态生成雪花
@@ -152,17 +223,33 @@
                 container.appendChild(snowflake);
             }
         }
-        // 按钮点击事件 - 修复语法错误
+        // 按钮点击事件
         document.getElementById('btn1').addEventListener('click', () => {
-            // 替换为 btn1 的实际跳转链接
             window.open("https://m.8591.com.tw/v3/mall/detail/2415539064", "_blank");
         });
         document.getElementById('btn2').addEventListener('click', () => {
-            alert("支持台服/國際服/國服\n僅支持ios越獄設備15～16.5系統\n1. 穩定人物+物資透視功能\n2. 聯繫客服購買+教學\n3. 天週月卡價格\n非卡密原因售出既不退換 購前請詢問客服詳情再購買🌟");
+            alert("支持台服/國服/國際服\n⚠️僅支持ios越獄設備15～16.5系統⚠️\n1. 穩定人物+物資透視功能\n2. 聯繫客服購買+教學\n3. 天:15週:90月:250卡價格\n非卡密原因售出既不退換 購前請詢問客服詳情再購買🌟");
         });
         document.getElementById('btn3').addEventListener('click', () => {
-            // 修复了引号拼接错误，去掉多余空格
             alert("下單須知(必看)：\n1. 確認服務需求與設備型號\n2. 聯繫客服付款並提供資訊\n3. 等待技術人員開通服務\n護航為科技護航,只負責帶老闆吃包搜紅撤離 其餘不負責\n350台幣一局\n945台幣三局\n1488台幣五局\n老闆撤離=結單\n交易方式為8591平台請安心下單\n如遇不穩定無法接單會正常退款請放心\n老闆如不聽指揮、亂跑、丟棄物資則不補償");
+        });
+        // 圖片影片彈層控制
+        const mediaBtn = document.getElementById('mediaBtn');
+        const mediaModal = document.getElementById('mediaModal');
+        const closeBtn = document.getElementById('closeBtn');
+        
+        mediaBtn.addEventListener('click', () => {
+            mediaModal.classList.add('active');
+        });
+        
+        closeBtn.addEventListener('click', () => {
+            mediaModal.classList.remove('active');
+        });
+        // 點擊彈層空白處關閉
+        mediaModal.addEventListener('click', (e) => {
+            if (e.target === mediaModal) {
+                mediaModal.classList.remove('active');
+            }
         });
         // 页面加载完成后生成雪花
         window.onload = createSnowflakes;
