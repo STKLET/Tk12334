@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>三角洲護航/台服手機端</title>
+    <title>三角洲DFM手遊</title>
     <style>
         * {
             margin: 0;
@@ -13,11 +13,27 @@
         body {
             min-height: 100vh;
             background: #1a1a2e;
-            /* 開啟垂直滾動，移除 overflow:hidden */
             overflow-y: auto;
             overflow-x: hidden;
             font-family: "Microsoft YaHei", sans-serif;
-            padding-bottom: 50px; /* 底部留白防止內容貼邊 */
+            padding-bottom: 50px;
+            padding-top: 10px;
+        }
+        /* 实时时间样式 - 右上角不碍眼位置 */
+        #time-display {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            color: #ffffff;
+            font-size: 14px;
+            z-index: 999;
+            background: rgba(0,0,0,0.3);
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+        /* 加载动画样式 */
+        @keyframes spin {
+            to {transform: rotate(360deg);}
         }
         /* 下雪特效容器 */
         #snow-container {
@@ -36,6 +52,7 @@
             border-radius: 50%;
             opacity: 0.7;
             animation: snowfall linear infinite;
+            transform: translateZ(0); /* 硬件加速 */
         }
         @keyframes snowfall {
             0% {
@@ -52,6 +69,78 @@
                 transform: translateY(100vh) translateX(30px);
                 opacity: 0;
             }
+        }
+        /* 绿色闪烁圆点动画 */
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        .status-dot {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            background-color: #4cd964;
+            border-radius: 50%;
+            animation: blink 1s infinite;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+        /* 自定义弹窗通用样式 - 放大尺寸+宽松内边距 */
+        .custom-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #2d2d44;
+            border: 2px solid #00bfff;
+            border-radius: 12px;
+            padding: 25px;
+            color: #ffffff;
+            font-size: 16px;
+            z-index: 9999;
+            display: none;
+            max-width: 90%; /* 放大弹窗宽度 */
+            width: 450px; /* 固定最大宽度，避免太窄 */
+            line-height: 1.8; /* 增加行间距，文字不拥挤 */
+        }
+        /* 弹窗关闭按钮样式 */
+        .modal-close {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background: #00bfff;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            margin-top: 20px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        /* 醒目状态文字 */
+        .status-text {
+            font-size: 20px;
+            font-weight: bold;
+            color: #4cd964;
+            margin-top: 10px;
+        }
+        /* 加载后弹入动画 */
+        .animate-item {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+        .animate-item.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .title-group.active {
+            transition-delay: 0.2s;
+        }
+        .btn-group.active {
+            transition-delay: 0.4s;
+        }
+        .contact.active {
+            transition-delay: 0.6s;
         }
         /* 标题样式 */
         .title-group {
@@ -82,7 +171,30 @@
             font-size: 24px;
             margin-top: 10px;
             opacity: 0.9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
+        /* SVG 图标通用样式 */
+        .icon {
+            width: 24px;
+            height: 24px;
+            vertical-align: middle;
+        }
+        .btn-icon {
+            width: 28px;
+            height: 28px;
+            margin-right: 8px;
+        }
+        /* 图标差异化配色 */
+        .icon-fire { fill: #ff6b35; }
+        .icon-tools { fill: #4cd964; }
+        .icon-warning { fill: #ffcc00; }
+        .icon-yt { fill: #ff3b30; }
+        .icon-plane { fill: #007aff; }
+        .icon-penguin { fill: #5ac8fa; }
+        .icon-safari { fill: #00bfff; }
         /* 按钮容器 */
         .btn-group {
             position: relative;
@@ -104,6 +216,11 @@
             font-size: 22px;
             cursor: pointer;
             transition: all 0.3s ease;
+            -webkit-tap-highlight-color: rgba(0, 191, 255, 0.3);
+            touch-action: manipulation;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .custom-btn:hover {
             background: linear-gradient(45deg, #0099cc, #00bfff);
@@ -118,6 +235,14 @@
             color: #cccccc;
             font-size: 18px;
         }
+        .contact p {
+            margin: 8px 0;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
         /* 圖片影片彈層樣式 - 支持滾動 */
         .media-modal {
             position: fixed;
@@ -128,10 +253,10 @@
             background: rgba(0, 0, 0, 0.9);
             z-index: 999;
             display: none;
-            align-items: flex-start; /* 改為頂部對齊，配合滾動 */
+            align-items: flex-start;
             justify-content: center;
             padding: 30px 20px;
-            overflow-y: auto; /* 彈層開啟垂直滾動 */
+            overflow-y: auto;
         }
         .media-modal.active {
             display: flex;
@@ -161,103 +286,237 @@
             color: #ffffff;
             font-size: 20px;
             cursor: pointer;
-            z-index: 1000; /* 確保關閉按鈕在最上層 */
+            z-index: 1000;
         }
     </style>
 </head>
 <body>
+    <!-- 实时时间显示 - 右上角不碍眼位置 -->
+    <div id="time-display"></div>
+
+    <!-- ios科技自定义弹窗 -->
+    <div class="custom-modal" id="techModal">
+        支持台服/國服/國際服<br>
+        ⚠️僅支持ios越獄設備15～16.5系統⚠️<br>
+        1. 穩定人物+物資透視功能<br>
+        2. 聯繫客服購買+教學<br>
+        3. 價格：天15 / 週90 / 月250<br>
+        非卡密原因售出不退換<br>
+        購前請詢問客服詳情🌟<br>
+        <span class="status-text">目前狀態:穩定<span class="status-dot"></span></span>
+        <button class="modal-close" id="techModalClose">關閉</button>
+    </div>
+
+    <!-- 下单须知自定义弹窗 -->
+    <div class="custom-modal" id="noticeModal">
+        <strong>下單須知(必看)：</strong><br>
+        1. 確認服務需求與設備型號<br>
+        2. 聯繫客服付款並提供資訊<br>
+        3. 等待技術人員開通服務<br>
+        <br>
+        護航為科技護航,只負責帶老闆吃包搜紅撤離 其餘不負責<br>
+        350台幣一局<br>
+        945台幣三局<br>
+        1488台幣五局<br>
+        老闆撤離=結單<br>
+        交易方式為8591平台請安心下單<br>
+        如遇不穩定無法接單會正常退款請放心<br>
+        老闆如不聽指揮、亂跑、丟棄物資則不補償
+        <button class="modal-close" id="noticeModalClose">關閉</button>
+    </div>
+
+    <!-- 带文字的加载动画 -->
+    <div id="loader" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#1a1a2e;display:flex;flex-direction:column;justify-content:center;align-items:center;z-index:9999;">
+        <div style="width:50px;height:50px;border:5px solid #00bfff;border-top-color:transparent;border-radius:50%;animation:spin 1s linear infinite;margin-bottom:20px;"></div>
+        <p style="color:#00bfff;font-size:20px;text-shadow:0 0 8px #00bfff;">載入中，請稍候...</p>
+    </div>
+
     <!-- 下雪特效容器 -->
     <div id="snow-container"></div>
+
     <!-- 标题组 -->
-    <div class="title-group">
+    <div class="title-group animate-item">
         <h1 class="title">三角洲DFM手遊</h1>
         <img src="https://i.postimg.cc/HLJH5k2B/50208EAB-3208-43BF-8854-1515047CC556-watermark.jpg" alt="头像" class="avatar">
         <p class="subtitle">護航/科技店舖</p>
-        <p class="subtitle">複製連結🔗到瀏覽器打開</p>
+        <p class="subtitle">
+            複製連結
+            <svg class="icon icon-safari" viewBox="0 0 24 24">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/>
+                <circle cx="12" cy="12" r="3"/>
+            </svg>
+            到瀏覽器打開
+        </p>
     </div>
+
     <!-- 按钮组 -->
-    <div class="btn-group">
-        <button class="custom-btn" id="btn1">航天/監獄絕密掛護🥷</button>
-        <button class="custom-btn" id="btn2">ios科技販售🧑‍💻</button>
-        <button class="custom-btn" id="btn3">下單須知(必看)❗️</button>
-        <!-- 新增圖片影片按鈕 -->
-        <button class="custom-btn" id="mediaBtn">科技展示🎁</button>
+    <div class="btn-group animate-item">
+        <!-- 火焰图标 -->
+        <button class="custom-btn" id="btn1">
+            <svg class="icon btn-icon icon-fire" viewBox="0 0 24 24">
+                <path d="M12 23c4.4 0 8-3.6 8-8h-2c0 3.3-2.7 6-6 6s-6-2.7-6-6H4c0 4.4 3.6 8 8 8zm4.5-12.5c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zM15 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm-4 2c1.6 0 3 1.4 3 3s-1.4 3-3 3-3-1.4-3-3 1.4-3 3-3zm0-2c2.8 0 5 2.2 5 5s-2.2 5-5 5-5-2.2-5-5 2.2-5 5-5zm-4.5 7.5c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zM5 4c1.1 0 2-.9 2-2S6.1 0 5 0 3 .9 3 2s.9 2 2 2z"/>
+            </svg>
+            航天/監獄絕密掛護
+        </button>
+        <!-- 齿轮扳手图标 -->
+        <button class="custom-btn" id="btn2">
+            <svg class="icon btn-icon icon-tools" viewBox="0 0 24 24">
+                <path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/>
+            </svg>
+            ios科技販售
+        </button>
+        <!-- 警告图标 -->
+        <button class="custom-btn" id="btn3">
+            <svg class="icon btn-icon icon-warning" viewBox="0 0 24 24">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/>
+            </svg>
+            下單須知(必看)
+        </button>
+        <!-- YouTube图标 -->
+        <button class="custom-btn" id="mediaBtn">
+            <svg class="icon btn-icon icon-yt" viewBox="0 0 24 24">
+                <path d="M21.543 6.498C22 8.28 22 12 22 12s0 3.72-.457 5.502c-.254.985-.997 1.76-1.938 2.022C17.896 20 12 20 12 20s-5.893 0-7.605-.476c-.945-.266-1.687-1.04-1.938-2.022C2 15.72 2 12 2 12s0-3.72.457-5.502c.254-.985.997-1.76 1.938-2.022C6.107 4 12 4 12 4s5.896 0 7.605.476c.945.266 1.687 1.04 1.938 2.022zM10 15.5l6-3.5-6-3.5v7z"/>
+            </svg>
+            科技展示
+        </button>
     </div>
+
     <!-- 联系方式 -->
-    <div class="contact">
-        <p>聯繫方式1：✈️TG:@kk112240</p>
-        <p>聯繫方式2：🐧QQ:2737547844</p>
+    <div class="contact animate-item">
+        <!-- 纸飞机图标 -->
+        <p onclick="copyText('TG:@kk112240')">
+            聯繫方式1：
+            <svg class="icon icon-plane" viewBox="0 0 24 24">
+                <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+            </svg>
+            TG:@kk112240
+        </p>
+        <!-- 企鹅图标 -->
+        <p onclick="copyText('2737547844')">
+            聯繫方式2：
+            <svg class="icon icon-penguin" viewBox="0 0 24 24">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+            </svg>
+            QQ:2737547844
+        </p>
     </div>
+
     <!-- 圖片影片彈層 -->
     <div class="media-modal" id="mediaModal">
-        <button class="close-btn" id="closeBtn">×</button>
+        <button class="close-btn" id="modal-close">×</button>
         <div class="media-container">
-            <!-- 示例圖片，替換為你的圖片鏈接 -->
             <img src="https://i.postimg.cc/0jH3fpcM/IMG-0013.jpg" alt="示例圖片1" class="media-item">
             <img src="https://i.postimg.cc/nrw5kv0M/IMG-0004.jpg" alt="示例圖片2" class="media-item">
-           
- </div>
+        </div>
     </div>
+
     <script>
         // 动态生成雪花
         function createSnowflakes() {
             const container = document.getElementById('snow-container');
-            const snowCount = 150; // 雪花数量，可调整
+            const snowCount = 80; 
             for (let i = 0; i < snowCount; i++) {
                 const snowflake = document.createElement('div');
                 snowflake.classList.add('snowflake');
 
-                // 随机雪花大小
                 const size = Math.random() * 4 + 1;
                 snowflake.style.width = `${size}px`;
                 snowflake.style.height = `${size}px`;
 
-                // 随机初始位置
                 snowflake.style.left = `${Math.random() * 100}vw`;
                 snowflake.style.top = `${Math.random() * -50}px`;
 
-                // 随机下落速度和偏移
                 const duration = Math.random() * 10 + 5;
                 snowflake.style.animationDuration = `${duration}s`;
                 snowflake.style.animationDelay = `${Math.random() * 5}s`;
+
+                snowflake.style.pointerEvents = "auto";
+                snowflake.addEventListener("click", () => {
+                    snowflake.style.opacity = 0;
+                    setTimeout(() => {
+                        snowflake.remove();
+                    }, 300);
+                });
+
                 container.appendChild(snowflake);
             }
         }
         
-        //初始彈窗
-         alert("歡迎光臨本店舖🙏\n提供遊戲科技、護航等服務\n打造服務快速專業回覆等多種協助✨");
+        // 长按复制功能
+        function copyText(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert(`已复制：${text}`);
+            }).catch(() => {
+                alert("复制失败，请手动复制");
+            });
+        }
         
+        // 初始弹窗
+        alert("歡迎光臨本店舖🙏\n提供遊戲科技、護航等服務\n打造服務快速專業回覆等多種協助✨");
         
-        // 按钮点击事件
+        // ios科技弹窗控制
+        document.getElementById('btn2').addEventListener('click', () => {
+            document.getElementById('techModal').style.display = 'block';
+        });
+        document.getElementById('techModalClose').addEventListener('click', () => {
+            document.getElementById('techModal').style.display = 'none';
+        });
+
+        // 下单须知弹窗控制
+        document.getElementById('btn3').addEventListener('click', () => {
+            document.getElementById('noticeModal').style.display = 'block';
+        });
+        document.getElementById('noticeModalClose').addEventListener('click', () => {
+            document.getElementById('noticeModal').style.display = 'none';
+        });
+
+        // 其他按钮事件
         document.getElementById('btn1').addEventListener('click', () => {
             window.open("https://m.8591.com.tw/v3/mall/detail/2415539064", "_blank");
         });
-        document.getElementById('btn2').addEventListener('click', () => {
-            alert("支持台服/國服/國際服\n⚠️僅支持ios越獄設備15～16.5系統⚠️\n1. 穩定人物+物資透視功能\n2. 聯繫客服購買+教學\n3. 天:15週:90月:250卡價格\n非卡密原因售出既不退換 購前請詢問客服詳情再購買🌟");
+
+        // 圖片彈層控制
+        document.getElementById('mediaBtn').addEventListener('click', () => {
+            document.getElementById('mediaModal').classList.add('active');
         });
-        document.getElementById('btn3').addEventListener('click', () => {
-            alert("下單須知(必看)：\n1. 確認服務需求與設備型號\n2. 聯繫客服付款並提供資訊\n3. 等待技術人員開通服務\n護航為科技護航,只負責帶老闆吃包搜紅撤離 其餘不負責\n350台幣一局\n945台幣三局\n1488台幣五局\n老闆撤離=結單\n交易方式為8591平台請安心下單\n如遇不穩定無法接單會正常退款請放心\n老闆如不聽指揮、亂跑、丟棄物資則不補償");
+        document.getElementById('modal-close').addEventListener('click', () => {
+            document.getElementById('mediaModal').classList.remove('active');
         });
-        // 圖片影片彈層控制
-        const mediaBtn = document.getElementById('mediaBtn');
-        const mediaModal = document.getElementById('mediaModal');
-        const closeBtn = document.getElementById('closeBtn');
-        
-        mediaBtn.addEventListener('click', () => {
-            mediaModal.classList.add('active');
-        });
-        
-        closeBtn.addEventListener('click', () => {
-            mediaModal.classList.remove('active');
-        });
-        // 點擊彈層空白處關閉
-        mediaModal.addEventListener('click', (e) => {
-            if (e.target === mediaModal) {
-                mediaModal.classList.remove('active');
+        document.getElementById('mediaModal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('mediaModal')) {
+                document.getElementById('mediaModal').classList.remove('active');
             }
         });
-        // 页面加载完成后生成雪花
-        window.onload = createSnowflakes;
+
+        // 实时更新时间 - 24小时制 年月日时分秒
+        function updateTime() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            const timeStr = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+            document.getElementById('time-display').textContent = timeStr;
+        }
+        updateTime();
+        setInterval(updateTime, 1000);
+
+        // 页面加载完成后执行
+        window.onload = () => {
+            createSnowflakes();
+            setTimeout(() => {
+                const loader = document.getElementById("loader");
+                loader.style.opacity = 0;
+                setTimeout(() => {
+                    loader.style.display = "none";
+                    document.querySelectorAll(".animate-item").forEach(item => {
+                        item.classList.add("active");
+                    });
+                }, 300);
+            }, 800);
+        };
     </script>
 </body>
 </html>
