@@ -9,7 +9,6 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            /* 全局禁止文本选中，核心样式 */
             user-select: none;
             -webkit-user-select: none;
             -moz-user-select: none;
@@ -23,6 +22,258 @@
             font-family: "Microsoft YaHei", sans-serif;
             padding-bottom: 50px;
             padding-top: 10px;
+            transition: margin-left 0.3s ease;
+        }
+        /* 汉堡菜单按钮 - 左上角 */
+        .menu-toggle {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            width: 40px;
+            height: 40px;
+            background: #2d2d44;
+            border: 2px solid #00bfff;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            z-index: 1001;
+        }
+        .menu-toggle span {
+            width: 24px;
+            height: 3px;
+            background: #00bfff;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+        /* 菜单展开时的按钮样式 */
+        body.menu-open .menu-toggle span:nth-child(1) {
+            transform: translateY(8px) rotate(45deg);
+        }
+        body.menu-open .menu-toggle span:nth-child(2) {
+            opacity: 0;
+        }
+        body.menu-open .menu-toggle span:nth-child(3) {
+            transform: translateY(-8px) rotate(-45deg);
+        }
+        /* 侧边导航栏 */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 260px;
+            height: 100vh;
+            background: #2d2d44;
+            border-right: 2px solid #00bfff;
+            z-index: 1000;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+            padding-top: 60px;
+        }
+        body.menu-open .sidebar {
+            transform: translateX(0);
+        }
+        body.menu-open {
+            margin-left: 260px;
+        }
+        /* 导航菜单项 */
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px 20px;
+            color: #ffffff;
+            font-size: 18px;
+            cursor: pointer;
+            border-bottom: 1px solid #3a3a55;
+            transition: background 0.3s ease;
+        }
+        .nav-item:hover {
+            background: rgba(0, 191, 255, 0.2);
+        }
+        .nav-item.active {
+            background: rgba(0, 191, 255, 0.3);
+            border-left: 4px solid #00bfff;
+        }
+        /* 内容区域 - 初始隐藏，按需显示 */
+        .content-section {
+            display: none;
+            position: relative;
+            z-index: 2;
+            max-width: 80%;
+            margin: 0 auto;
+            padding: 20px 0;
+            color: #ffffff;
+        }
+        /* 首页默认显示 */
+        #home-content {
+            display: block;
+            color: #cccccc;
+            font-size: 22px;
+            line-height: 1.8;
+        }
+        .content-section.active {
+            display: block;
+        }
+        /* 商品/图片轮播容器通用样式 */
+        .swiper-container {
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+        .swiper-wrapper {
+            display: flex;
+            transition: transform 0.3s ease;
+            touch-action: pan-x;
+        }
+        .swiper-slide {
+            flex: 0 0 100%;
+            padding: 0 10px;
+        }
+        /* 商品卡片样式 */
+        .product-card {
+            background: #2d2d44;
+            border: 2px solid #00bfff;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .recommend-tag {
+            display: inline-block;
+            background: #ff8c00;
+            color: #ffffff;
+            font-size: 14px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+        .product-name {
+            font-size: 22px;
+            color: #ffffff;
+            margin: 10px 0;
+        }
+        .product-price {
+            font-size: 24px;
+            color: #ff6b35;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .product-stock {
+            font-size: 18px;
+            color: #4cd964;
+            margin: 10px 0;
+        }
+        /* 稳定状态闪烁圆点 */
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        .status-dot {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            background-color: #4cd964;
+            border-radius: 50%;
+            animation: blink 1s infinite;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+        .status-text {
+            font-size: 18px;
+            color: #ffffff;
+        }
+        /* 轮播指示点通用样式 */
+        .swiper-dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 15px;
+        }
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #cccccc;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .dot.active {
+            background: #00bfff;
+        }
+        /* 图片轮播样式 */
+        .img-slide {
+            text-align: center;
+            padding: 10px;
+        }
+        .slide-img {
+            width: 100%;
+            max-width: 500px;
+            border-radius: 12px;
+            border: 2px solid #00bfff;
+            box-shadow: 0 0 15px rgba(0, 191, 255, 0.5);
+        }
+        /* 护航须知弹窗样式 */
+        .escort-notice-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #2d2d44;
+            border: 2px solid #ff6b35;
+            border-radius: 12px;
+            padding: 25px;
+            color: #ffffff;
+            font-size: 16px;
+            z-index: 10000;
+            display: none;
+            max-width: 90%;
+            width: 400px;
+            line-height: 2;
+            max-height: 70vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+        /* iOS科技须知弹窗样式 */
+        .tech-notice-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #2d2d44;
+            border: 2px solid #ff6b35;
+            border-radius: 12px;
+            padding: 25px;
+            color: #ffffff;
+            font-size: 16px;
+            line-height: 2;
+            z-index: 10000;
+            display: none;
+            max-width: 90%;
+            width: 400px;
+            max-height: 70vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+        .notice-title {
+            font-size: 20px;
+            color: #ff6b35;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .notice-confirm {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background: #00bfff;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
         }
         /* 实时时间样式 - 右上角不碍眼位置 */
         #time-display {
@@ -39,6 +290,19 @@
         /* 加载动画样式 */
         @keyframes spin {
             to {transform: rotate(360deg);}
+        }
+        #loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #1a1a2e;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
         }
         /* 弹窗遮罩样式 */
         .modal-mask {
@@ -68,7 +332,7 @@
             border-radius: 50%;
             opacity: 0.7;
             animation: snowfall linear infinite;
-            transform: translateZ(0); /* 硬件加速 */
+            transform: translateZ(0);
         }
         @keyframes snowfall {
             0% {
@@ -86,22 +350,7 @@
                 opacity: 0;
             }
         }
-        /* 绿色闪烁圆点动画 */
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0; }
-        }
-        .status-dot {
-            display: inline-block;
-            width: 12px;
-            height: 12px;
-            background-color: #4cd964;
-            border-radius: 50%;
-            animation: blink 1s infinite;
-            margin-left: 10px;
-            vertical-align: middle;
-        }
-        /* 自定义弹窗通用样式 - 放大尺寸+宽松内边距+垂直滚动 */
+        /* 自定义弹窗通用样式 */
         .custom-modal {
             position: fixed;
             top: 50%;
@@ -115,23 +364,15 @@
             font-size: 16px;
             z-index: 9999;
             display: none;
-            max-width: 90%; /* 放大弹窗宽度 */
-            width: 450px; /* 固定最大宽度，避免太窄 */
-            line-height: 1.8; /* 增加行间距，文字不拥挤 */
-            max-height: 80vh; /* 限制最大高度为视口80% */
-            overflow-y: auto; /* 内容溢出时显示垂直滚动条 */
-            overflow-x: hidden; /* 禁止横向滚动 */
-            overscroll-behavior: contain; /* 阻止滚动穿透背景页面 */
-            -webkit-overflow-scrolling: touch; /* 移动端平滑滚动 */
+            max-width: 90%;
+            width: 450px;
+            line-height: 1.8;
+            max-height: 80vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+            overscroll-behavior: contain;
+            -webkit-overflow-scrolling: touch;
         }
-        /* 弹窗内图片样式 - 置顶适配 */
-        .modal-img {
-            width: 100%;
-            border-radius: 8px;
-            margin: 0 0 15px 0; /* 只保留下方间距，放在最上方 */
-            border: 1px solid #00bfff;
-        }
-        /* 弹窗关闭按钮样式 */
         .modal-close {
             display: block;
             width: 100%;
@@ -143,13 +384,6 @@
             margin-top: 20px;
             cursor: pointer;
             font-size: 16px;
-        }
-        /* 醒目状态文字 */
-        .status-text {
-            font-size: 20px;
-            font-weight: bold;
-            color: #4cd964;
-            margin-top: 10px;
         }
         /* 加载后弹入动画 */
         .animate-item {
@@ -164,7 +398,7 @@
         .title-group.active {
             transition-delay: 0.2s;
         }
-        .btn-group.active {
+        .content-group.active {
             transition-delay: 0.4s;
         }
         .contact.active {
@@ -195,7 +429,6 @@
             object-fit: cover;
         }
         .subtitle {
-            color: #00bfff;
             font-size: 24px;
             margin-top: 10px;
             opacity: 0.9;
@@ -203,6 +436,16 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
+            color: #00bfff;
+        }
+        /* iOS科技说明文本 */
+        .tech-desc {
+            font-size: 18px;
+            color: #00bfff;
+            text-align: center;
+            margin: 20px 0;
+            line-height: 1.8;
+            display: none;
         }
         /* SVG 图标通用样式 */
         .icon {
@@ -210,59 +453,18 @@
             height: 24px;
             vertical-align: middle;
         }
-        .btn-icon {
+        .nav-icon {
             width: 28px;
             height: 28px;
-            margin-right: 8px;
         }
         /* 图标差异化配色 */
+        .icon-home { fill: #4cd964; }
         .icon-fire { fill: #ff6b35; }
         .icon-tools { fill: #4cd964; }
-        .icon-warning { fill: #ffcc00; }
         .icon-yt { fill: #ff3b30; }
         .icon-plane { fill: #007aff; }
         .icon-penguin { fill: #5ac8fa; }
-        .icon-safari { fill: #00bfff; }
-        /* 按钮容器 */
-        .btn-group {
-            position: relative;
-            z-index: 2;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            width: 80%;
-            max-width: 400px;
-            margin: 0 auto 50px;
-        }
-        /* 圆角按钮样式 + 点击反馈 */
-        .custom-btn {
-            padding: 15px 0;
-            background: linear-gradient(45deg, #00bfff, #1a1a2e);
-            border: 2px solid #00bfff;
-            border-radius: 15px;
-            color: #ffffff;
-            font-size: 22px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            -webkit-tap-highlight-color: rgba(0, 191, 255, 0.3);
-            touch-action: manipulation;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .custom-btn:hover {
-            background: linear-gradient(45deg, #0099cc, #00bfff);
-            box-shadow: 0 0 15px #00bfff;
-        }
-        /* 按钮点击按压反馈 */
-        .custom-btn:active {
-            transform: scale(0.98);
-            background: linear-gradient(45deg, #007acc, #0099cc);
-        }
-        .modal-close:active {
-            background: #007acc;
-        }
-        /* 联系方式样式 - 单独允许复制文本（覆盖全局禁止） */
+        /* 联系方式样式 */
         .contact-copy {
             user-select: text;
             -webkit-user-select: text;
@@ -285,51 +487,6 @@
             justify-content: center;
             gap: 8px;
         }
-        /* 圖片影片彈層樣式 - 支持滾動 */
-        .media-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            z-index: 999;
-            display: none;
-            align-items: flex-start;
-            justify-content: center;
-            padding: 30px 20px;
-            overflow-y: auto;
-        }
-        .media-modal.active {
-            display: flex;
-        }
-        .media-container {
-            width: 100%;
-            max-width: 500px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-        .media-item {
-            width: 100%;
-            border-radius: 10px;
-            border: 2px solid #00bfff;
-            box-shadow: 0 0 10px #00bfff;
-        }
-        .close-btn {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            width: 40px;
-            height: 40px;
-            background: #ff3333;
-            border: none;
-            border-radius: 50%;
-            color: #ffffff;
-            font-size: 20px;
-            cursor: pointer;
-            z-index: 1000;
-        }
         /* 系统深色/浅色模式适配 */
         @media (prefers-color-scheme: light) {
             body {
@@ -342,6 +499,9 @@
             .subtitle {
                 color: #007acc;
             }
+            #home-content {
+                color: #333333;
+            }
             .custom-modal {
                 background: #ffffff;
                 color: #1a1a2e;
@@ -349,50 +509,121 @@
             .contact {
                 color: #333333;
             }
+            .sidebar {
+                background: #f5f5f5;
+                border-right-color: #007acc;
+            }
+            .nav-item {
+                color: #1a1a2e;
+                border-bottom-color: #e0e0e0;
+            }
+            .nav-item:hover, .nav-item.active {
+                background: rgba(0, 122, 204, 0.2);
+                border-left-color: #007acc;
+            }
+            .menu-toggle {
+                background: #f5f5f5;
+                border-color: #007acc;
+            }
+            .menu-toggle span {
+                background: #007acc;
+            }
+            .product-card {
+                background: #ffffff;
+                border-color: #007acc;
+            }
+            .product-name {
+                color: #1a1a2e;
+            }
+            .product-stock {
+                color: #28a745;
+            }
+            .dot {
+                background: #999999;
+            }
+            .dot.active {
+                background: #007acc;
+            }
+            .escort-notice-modal, .tech-notice-modal {
+                background: #ffffff;
+                color: #1a1a2e;
+                border-color: #ff6b35;
+            }
+            .tech-desc {
+                color: #007acc;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- 实时时间显示 - 右上角不碍眼位置 -->
+    <!-- 汉堡菜单按钮 -->
+    <div class="menu-toggle" id="menuToggle">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+
+    <!-- 侧边导航栏 -->
+    <div class="sidebar" id="sidebar">
+        <div class="nav-item" data-target="home-content">
+            <svg class="icon nav-icon icon-home" viewBox="0 0 24 24">
+                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+            </svg>
+            首頁
+        </div>
+        <div class="nav-item" data-target="content1" id="escortNavItem">
+            <svg class="icon nav-icon icon-fire" viewBox="0 0 24 24">
+                <path d="M12 23c4.4 0 8-3.6 8-8h-2c0 3.3-2.7 6-6 6s-6-2.7-6-6H4c0 4.4 3.6 8 8 8zm4.5-12.5c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zM15 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm-4 2c1.6 0 3 1.4 3 3s-1.4 3-3 3-3-1.4-3-3 1.4-3 3-3zm0-2c2.8 0 5 2.2 5 5s-2.2 5-5 5-5-2.2-5-5 2.2-5 5-5zm-4.5 7.5c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zM5 4c1.1 0 2-.9 2-2S6.1 0 5 0 3 .9 3 2s.9 2 2 2z"/>
+            </svg>
+            航天/監獄絕密掛護
+        </div>
+        <div class="nav-item" data-target="content2" id="techNavItem">
+            <svg class="icon nav-icon icon-tools" viewBox="0 0 24 24">
+                <path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/>
+            </svg>
+            ios科技販售
+        </div>
+        <div class="nav-item" data-target="content4" id="imgNavItem">
+            <svg class="icon nav-icon icon-yt" viewBox="0 0 24 24">
+                <path d="M21.543 6.498C22 8.28 22 12 22 12s0 3.72-.457 5.502c-.254.985-.997 1.76-1.938 2.022C17.896 20 12 20 12 20s-5.893 0-7.605-.476c-.945-.266-1.687-1.04-1.938-2.022C2 15.72 2 12 2 12s0-3.72.457-5.502c.254-.985.997-1.76 1.938-2.022C6.107 4 12 4 12 4s5.896 0 7.605.476c.945.266 1.687 1.04 1.938 2.022zM10 15.5l6-3.5-6-3.5v7z"/>
+            </svg>
+            科技展示
+        </div>
+    </div>
+
+    <!-- 护航须知弹窗 -->
+    <div class="escort-notice-modal" id="escortNoticeModal">
+        <h3 class="notice-title">護航服務須知</h3>
+        <div class="notice-content">
+            本護航為紅玩⚠️掛護⚠️<br>
+            只負責帶老闆吃包、搜紅，其餘不負責<br>
+            清圖+老闆撤離就算結單<br>
+            如老闆有自殺、不聽指揮、丟物資等行為，不會補單<br>
+            請詳細閱讀後再下單，下單視為同意✅該條約<br>
+            謝謝配合！
+        </div>
+        <button class="notice-confirm" id="escortNoticeConfirm">我已閱讀並同意</button>
+    </div>
+
+    <!-- iOS科技须知弹窗 -->
+    <div class="tech-notice-modal" id="techNoticeModal">
+        <h3 class="notice-title">iOS科技購買須知</h3>
+        <div class="notice-content">
+            🔔本商品為遊戲科技 可能涉及遊戲代碼修改 讀取手段❗️<br>
+            商品(卡密)售出後 非卡密無法使用問題不做退換⚠️<br>
+            請詳細閱讀後再購買 購買視為同意✅該條約
+        </div>
+        <button class="notice-confirm" id="techNoticeConfirm">我已閱讀並同意</button>
+    </div>
+
+    <!-- 实时时间显示 -->
     <div id="time-display"></div>
 
     <!-- 弹窗遮罩层 -->
     <div class="modal-mask" id="modalMask"></div>
 
-    <!-- ios科技自定义弹窗 - 图片置顶+滚动条 -->
-    <div class="custom-modal" id="techModal">
-        <img src="https://i.postimg.cc/j5fcVF0s/IMG-3588.jpg" alt="ios科技展示图" class="modal-img">
-        支持台服/國服/國際服<br>
-        ⚠️僅支持ios越獄設備15～16.5系統⚠️<br>
-        1. 穩定人物+物資透視功能<br>
-        2. 聯繫客服購買+教學<br>
-        3. 價格：天15 / 週90 / 月250<br>
-        非卡密原因售出不退換<br>
-        購前請詢問客服詳情🌟<br>
-        <span class="status-text">目前狀態:穩定<span class="status-dot"></span></span>
-        <button class="modal-close" id="techModalClose">關閉</button>
-    </div>
-
-    <!-- 下单须知自定义弹窗 - 滚动条 -->
-    <div class="custom-modal" id="noticeModal">
-        <strong>下單須知(必看)：</strong><br>
-        1. 確認服務需求與設備型號<br>
-        2. 聯繫客服付款並提供資訊<br>
-        3. 等待技術人員開通服務<br>
-        <br>
-        護航為科技護航,只負責帶老闆吃包搜紅撤離 其餘不負責<br>
-        350台幣一局<br>
-        945台幣三局<br>
-        1488台幣五局<br>
-        老闆撤離=結單<br>
-        交易方式為8591平台請安心下單<br>
-        如遇不穩定無法接單會正常退款請放心<br>
-        老闆如不聽指揮、亂跑、丟棄物資則不補償
-        <button class="modal-close" id="noticeModalClose">關閉</button>
-    </div>
-
-    <!-- 带文字的加载动画 -->
-    <div id="loader" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#1a1a2e;display:flex;flex-direction:column;justify-content:center;align-items:center;z-index:9999;">
+    <!-- 加载动画 -->
+    <div id="loader">
         <div style="width:50px;height:50px;border:5px solid #00bfff;border-top-color:transparent;border-radius:50%;animation:spin 1s linear infinite;margin-bottom:20px;"></div>
         <p style="color:#00bfff;font-size:20px;text-shadow:0 0 8px #00bfff;">載入中，請稍候...</p>
     </div>
@@ -405,45 +636,166 @@
         <h1 class="title">三角洲DFM手遊</h1>
         <img src="https://i.postimg.cc/HLJH5k2B/50208EAB-3208-43BF-8854-1515047CC556-watermark.jpg" alt="头像" class="avatar">
         <p class="subtitle">護航/科技店舖</p>
-        <p class="subtitle">
-            複製連結
-            <svg class="icon icon-safari" viewBox="0 0 24 24">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/>
-                <circle cx="12" cy="12" r="3"/>
-            </svg>
-            到瀏覽器打開
-        </p>
     </div>
 
-    <!-- 按钮组 -->
-    <div class="btn-group animate-item">
-        <button class="custom-btn" id="btn1">
-            <svg class="icon btn-icon icon-fire" viewBox="0 0 24 24">
-                <path d="M12 23c4.4 0 8-3.6 8-8h-2c0 3.3-2.7 6-6 6s-6-2.7-6-6H4c0 4.4 3.6 8 8 8zm4.5-12.5c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zM15 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm-4 2c1.6 0 3 1.4 3 3s-1.4 3-3 3-3-1.4-3-3 1.4-3 3-3zm0-2c2.8 0 5 2.2 5 5s-2.2 5-5 5-5-2.2-5-5 2.2-5 5-5zm-4.5 7.5c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zM5 4c1.1 0 2-.9 2-2S6.1 0 5 0 3 .9 3 2s.9 2 2 2z"/>
-            </svg>
-            航天/監獄絕密掛護
-        </button>
-        <button class="custom-btn" id="btn2">
-            <svg class="icon btn-icon icon-tools" viewBox="0 0 24 24">
-                <path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/>
-            </svg>
-            ios科技販售
-        </button>
-        <button class="custom-btn" id="btn3">
-            <svg class="icon btn-icon icon-warning" viewBox="0 0 24 24">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/>
-            </svg>
-            下單須知(必看)
-        </button>
-        <button class="custom-btn" id="mediaBtn">
-            <svg class="icon btn-icon icon-yt" viewBox="0 0 24 24">
-                <path d="M21.543 6.498C22 8.28 22 12 22 12s0 3.72-.457 5.502c-.254.985-.997 1.76-1.938 2.022C17.896 20 12 20 12 20s-5.893 0-7.605-.476c-.945-.266-1.687-1.04-1.938-2.022C2 15.72 2 12 2 12s0-3.72.457-5.502c.254-.985.997-1.76 1.938-2.022C6.107 4 12 4 12 4s5.896 0 7.605.476c.945.266 1.687 1.04 1.938 2.022zM10 15.5l6-3.5-6-3.5v7z"/>
-            </svg>
-            科技展示
-        </button>
+    <!-- 内容区域 -->
+    <div class="content-group animate-item">
+        <!-- 首页内容 -->
+        <div class="content-section" id="home-content">
+            <p style="text-align:center;margin:20px 0;">歡迎光臨三角洲DFM手遊護航/科技店舖</p>
+            <p style="text-align:center;margin:20px 0;">專業台服紅玩掛護，覆蓋絕密地圖全場景</p>
+            <p style="text-align:center;margin:20px 0;">點擊左側菜單選擇對應服務，享受高效遊戲體驗</p>
+        </div>
+        <!-- 护航内容 -->
+        <div class="content-section" id="content1">
+            <div class="swiper-container" id="escortSwiper">
+                <div class="swiper-wrapper">
+                    <!-- 商品1 -->
+                    <div class="swiper-slide">
+                        <div class="product-card">
+                            <span class="recommend-tag">推薦</span>
+                            <h3 class="product-name">台服紅玩｜掛護｜絕密地圖</h3>
+                            <div class="product-price">350台幣 <span style="font-size:18px;color:#ffffff;">1局</span></div>
+                            <div class="product-stock">商品庫存：999</div>
+                            <a href="https://m.8591.com.tw/v3/mall/detail/2415539064" target="_blank" style="display:block;width:100%;padding:15px 0;background:linear-gradient(45deg, #00bfff, #1a1a2e);border:2px solid #00bfff;border-radius:15px;color:#ffffff;font-size:22px;text-align:center;text-decoration:none;margin:20px 0;">前往8591下單</a>
+                        </div>
+                    </div>
+                    <!-- 商品2 -->
+                    <div class="swiper-slide">
+                        <div class="product-card">
+                            <span class="recommend-tag">熱銷</span>
+                            <h3 class="product-name">台服紅玩｜掛護｜絕密地圖</h3>
+                            <div class="product-price">945台幣 <span style="font-size:18px;color:#ffffff;">3局</span></div>
+                            <div class="product-stock">商品庫存：999</div>
+                            <a href="https://m.8591.com.tw/v3/mall/detail/2415539064" target="_blank" style="display:block;width:100%;padding:15px 0;background:linear-gradient(45deg, #00bfff, #1a1a2e);border:2px solid #00bfff;border-radius:15px;color:#ffffff;font-size:22px;text-align:center;text-decoration:none;margin:20px 0;">前往8591下單</a>
+                        </div>
+                    </div>
+                    <!-- 商品3 -->
+                    <div class="swiper-slide">
+                        <div class="product-card">
+                            <span class="recommend-tag">特惠</span>
+                            <h3 class="product-name">台服紅玩｜掛護｜絕密地圖</h3>
+                            <div class="product-price">1488台幣 <span style="font-size:18px;color:#ffffff;">5局</span></div>
+                            <div class="product-stock">商品庫存：999</div>
+                            <a href="https://m.8591.com.tw/v3/mall/detail/2415539064" target="_blank" style="display:block;width:100%;padding:15px 0;background:linear-gradient(45deg, #00bfff, #1a1a2e);border:2px solid #00bfff;border-radius:15px;color:#ffffff;font-size:22px;text-align:center;text-decoration:none;margin:20px 0;">前往8591下單</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- 轮播指示点 -->
+                <div class="swiper-dots" id="escortDots">
+                    <div class="dot active" data-index="0"></div>
+                    <div class="dot" data-index="1"></div>
+                    <div class="dot" data-index="2"></div>
+                </div>
+            </div>
+        </div>
+        <!-- iOS科技内容 -->
+        <div class="content-section" id="content2">
+            <div class="tech-desc animate-item">
+                ios科技 僅支持多巴胺Roothide越獄<br>
+                支持系統為15～16.5.1<br>
+                功能:人物 骨骼 武器 隊編 射線 幹員 物資透視
+            </div>
+            <div class="swiper-container" id="techSwiper">
+                <div class="swiper-wrapper">
+                    <!-- 商品1 - 天卡 -->
+                    <div class="swiper-slide">
+                        <div class="product-card">
+                            <span class="recommend-tag">日卡</span>
+                            <h3 class="product-name">DFM台服科技僅支持ios｜天卡</h3>
+                            <div class="product-price">90台幣</div>
+                            <div class="status-text">目前狀態 <span class="status-dot"></span></div>
+                            <div class="product-stock">商品庫存：999</div>
+                            <a href="https://m.8591.com.tw/v3/mall/detail/2415539064" target="_blank" style="display:block;width:100%;padding:15px 0;background:linear-gradient(45deg, #00bfff, #1a1a2e);border:2px solid #00bfff;border-radius:15px;color:#ffffff;font-size:22px;text-align:center;text-decoration:none;margin:20px 0;">前往8591下單</a>
+                        </div>
+                    </div>
+                    <!-- 商品2 - 週卡 -->
+                    <div class="swiper-slide">
+                        <div class="product-card">
+                            <span class="recommend-tag">週卡</span>
+                            <h3 class="product-name">DFM台服科技僅支持ios｜週卡</h3>
+                            <div class="product-price">400台幣</div>
+                            <div class="status-text">目前狀態 <span class="status-dot"></span></div>
+                            <div class="product-stock">商品庫存：999</div>
+                            <a href="https://m.8591.com.tw/v3/mall/detail/2415539064" target="_blank" style="display:block;width:100%;padding:15px 0;background:linear-gradient(45deg, #00bfff, #1a1a2e);border:2px solid #00bfff;border-radius:15px;color:#ffffff;font-size:22px;text-align:center;text-decoration:none;margin:20px 0;">前往8591下單</a>
+                        </div>
+                    </div>
+                    <!-- 商品3 - 月卡 -->
+                    <div class="swiper-slide">
+                        <div class="product-card">
+                            <span class="recommend-tag">月卡</span>
+                            <h3 class="product-name">DFM台服科技僅支持ios｜月卡</h3>
+                            <div class="product-price">1200台幣</div>
+                            <div class="status-text">目前狀態 <span class="status-dot"></span></div>
+                            <div class="product-stock">商品庫存：999</div>
+                            <a href="https://m.8591.com.tw/v3/mall/detail/2415539064" target="_blank" style="display:block;width:100%;padding:15px 0;background:linear-gradient(45deg, #00bfff, #1a1a2e);border:2px solid #00bfff;border-radius:15px;color:#ffffff;font-size:22px;text-align:center;text-decoration:none;margin:20px 0;">前往8591下單</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- 轮播指示点 -->
+                <div class="swiper-dots" id="techDots">
+                    <div class="dot active" data-index="0"></div>
+                    <div class="dot" data-index="1"></div>
+                    <div class="dot" data-index="2"></div>
+                </div>
+            </div>
+        </div>
+        <!-- 科技展示内容 - 图片轮播 -->
+        <div class="content-section" id="content4">
+            <h3 style="text-align:center;font-size:24px;margin:20px 0;color:#00bfff;">科技效果展示</h3>
+            <div class="swiper-container" id="imgSwiper">
+                <div class="swiper-wrapper">
+                    <!-- 图片1 -->
+                    <div class="swiper-slide">
+                        <div class="img-slide">
+                            <img src="https://i.postimg.cc/nrw5kv0M/IMG-0004.jpg" alt="科技展示图1" class="slide-img">
+                        </div>
+                    </div>
+                    <!-- 图片2 -->
+                    <div class="swiper-slide">
+                        <div class="img-slide">
+                            <img src="https://i.postimg.cc/0jH3fpcM/IMG-0013.jpg" alt="科技展示图2" class="slide-img">
+                        </div>
+                    </div>
+                    <!-- 图片3 -->
+                    <div class="swiper-slide">
+                        <div class="img-slide">
+                            <img src="https://i.postimg.cc/c1zzQxrp/IMG-0008.jpg" alt="科技展示图3" class="slide-img">
+                        </div>
+                    </div>
+                    <!-- 图片4 -->
+                    <div class="swiper-slide">
+                        <div class="img-slide">
+                            <img src="https://i.postimg.cc/QNzzp8Hy/zhan-ji1.jpg" alt="戰績展示1" class="slide-img">
+                        </div>
+                    </div>
+                    <!-- 图片5 -->
+                    <div class="swiper-slide">
+                        <div class="img-slide">
+                            <img src="https://i.postimg.cc/D0RYFg9d/zhan-ji2.jpg" alt="戰績展示2" class="slide-img">
+                        </div>
+                    </div>
+                    <!-- 图片6 -->
+                    <div class="swiper-slide">
+                        <div class="img-slide">
+                            <img src="https://i.postimg.cc/59rrw4Xc/zhan-ji3.jpg" alt="戰績展示3" class="slide-img">
+                        </div>
+                    </div>
+                </div>
+                <!-- 轮播指示点 -->
+                <div class="swiper-dots" id="imgDots">
+                    <div class="dot active" data-index="0"></div>
+                    <div class="dot" data-index="1"></div>
+                    <div class="dot" data-index="2"></div>
+                    <div class="dot" data-index="3"></div>
+                    <div class="dot" data-index="4"></div>
+                    <div class="dot" data-index="5"></div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- 联系方式 - 可复制文本 -->
+    <!-- 联系方式 -->
     <div class="contact animate-item">
         <p onclick="copyText('TG:@kk112240')">
             聯繫方式1：
@@ -459,15 +811,6 @@
             </svg>
             <span class="contact-copy">QQ:2737547844</span>
         </p>
-    </div>
-
-    <!-- 圖片影片彈層 -->
-    <div class="media-modal" id="mediaModal">
-        <button class="close-btn" id="modal-close">×</button>
-        <div class="media-container">
-            <img src="https://i.postimg.cc/0jH3fpcM/IMG-0013.jpg" alt="示例圖片1" class="media-item">
-            <img src="https://i.postimg.cc/nrw5kv0M/IMG-0004.jpg" alt="示例圖片2" class="media-item">
-        </div>
     </div>
 
     <script>
@@ -524,47 +867,186 @@
             document.getElementById('modalMask').style.display = 'none';
         }
 
-        // ios科技弹窗控制
-        document.getElementById('btn2').addEventListener('click', () => {
-            showModal('techModal');
-        });
-        document.getElementById('techModalClose').addEventListener('click', () => {
-            hideModal('techModal');
-        });
-
-        // 下单须知弹窗控制
-        document.getElementById('btn3').addEventListener('click', () => {
-            showModal('noticeModal');
-        });
-        document.getElementById('noticeModalClose').addEventListener('click', () => {
-            hideModal('noticeModal');
+        // 汉堡菜单切换
+        const menuToggle = document.getElementById('menuToggle');
+        const sidebar = document.getElementById('sidebar');
+        const body = document.body;
+        menuToggle.addEventListener('click', () => {
+            body.classList.toggle('menu-open');
         });
 
-        // 点击遮罩关闭弹窗
-        document.getElementById('modalMask').addEventListener('click', () => {
-            hideModal('techModal');
-            hideModal('noticeModal');
+        // 导航栏通用变量
+        const navItems = document.querySelectorAll('.nav-item');
+        const contentSections = document.querySelectorAll('.content-section');
+
+        // 护航须知弹窗控制
+        const escortNoticeModal = document.getElementById('escortNoticeModal');
+        const escortNavItem = document.getElementById('escortNavItem');
+        const escortNoticeConfirm = document.getElementById('escortNoticeConfirm');
+
+        escortNavItem.addEventListener('click', (e) => {
+            e.stopPropagation();
+            showModal('escortNoticeModal');
         });
 
-        // 其他按钮事件
-        document.getElementById('btn1').addEventListener('click', () => {
-            window.open("https://m.8591.com.tw/v3/mall/detail/2415539064", "_blank");
+        escortNoticeConfirm.addEventListener('click', () => {
+            hideModal('escortNoticeModal');
+            navItems.forEach(nav => nav.classList.remove('active'));
+            contentSections.forEach(section => section.style.display = 'none');
+            escortNavItem.classList.add('active');
+            document.getElementById('content1').style.display = 'block';
+            body.classList.remove('menu-open');
         });
 
-        // 圖片彈層控制
-        document.getElementById('mediaBtn').addEventListener('click', () => {
-            document.getElementById('mediaModal').classList.add('active');
+        // iOS科技须知弹窗控制
+        const techNoticeModal = document.getElementById('techNoticeModal');
+        const techNavItem = document.getElementById('techNavItem');
+        const techNoticeConfirm = document.getElementById('techNoticeConfirm');
+
+        techNavItem.addEventListener('click', (e) => {
+            e.stopPropagation();
+            showModal('techNoticeModal');
         });
-        document.getElementById('modal-close').addEventListener('click', () => {
-            document.getElementById('mediaModal').classList.remove('active');
+
+        techNoticeConfirm.addEventListener('click', () => {
+            hideModal('techNoticeModal');
+            navItems.forEach(nav => nav.classList.remove('active'));
+            contentSections.forEach(section => section.style.display = 'none');
+            techNavItem.classList.add('active');
+            document.getElementById('content2').style.display = 'block';
+            document.querySelector('.tech-desc').style.display = 'block';
+            body.classList.remove('menu-open');
         });
-        document.getElementById('mediaModal').addEventListener('click', (e) => {
-            if (e.target === document.getElementById('mediaModal')) {
-                document.getElementById('mediaModal').classList.remove('active');
+
+        // 科技展示导航项点击事件
+        const imgNavItem = document.getElementById('imgNavItem');
+        imgNavItem.addEventListener('click', (e) => {
+            e.stopPropagation();
+            navItems.forEach(nav => nav.classList.remove('active'));
+            contentSections.forEach(section => {
+                section.style.display = 'none';
+                // 隐藏iOS科技说明文本
+                if (document.querySelector('.tech-desc')) {
+                    document.querySelector('.tech-desc').style.display = 'none';
+                }
+            });
+            imgNavItem.classList.add('active');
+            document.getElementById('content4').style.display = 'block';
+            body.classList.remove('menu-open');
+        });
+
+        // 其他导航项点击事件
+        navItems.forEach(item => {
+            if (item.id !== 'escortNavItem' && item.id !== 'techNavItem' && item.id !== 'imgNavItem') {
+                item.addEventListener('click', () => {
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    contentSections.forEach(section => {
+                        section.style.display = 'none';
+                        if (document.querySelector('.tech-desc')) {
+                            document.querySelector('.tech-desc').style.display = 'none';
+                        }
+                    });
+                    item.classList.add('active');
+                    const targetId = item.dataset.target;
+                    document.getElementById(targetId).style.display = 'block';
+                    body.classList.remove('menu-open');
+                });
             }
         });
 
-        // 实时更新时间 - 24小时制 年月日时分秒
+        // 轮播通用函数
+        function initSwiper(swiperId, dotsId) {
+            const swiper = document.getElementById(swiperId);
+            const wrapper = swiper.querySelector('.swiper-wrapper');
+            const slides = swiper.querySelectorAll('.swiper-slide');
+            const dots = document.getElementById(dotsId).querySelectorAll('.dot');
+            let currentIndex = 0;
+
+            // 指示点切换
+            dots.forEach(dot => {
+                dot.addEventListener('click', () => {
+                    currentIndex = parseInt(dot.dataset.index);
+                    updateSwiper();
+                });
+            });
+
+            // 更新轮播
+            function updateSwiper() {
+                const slideWidth = slides[0].offsetWidth;
+                wrapper.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
+                dots.forEach((dot, index) => {
+                    index === currentIndex ? dot.classList.add('active') : dot.classList.remove('active');
+                });
+            }
+
+            // 触摸/鼠标拖拽
+            let startX = 0;
+            let moveX = 0;
+            let isDragging = false;
+
+            swiper.addEventListener('touchstart', (e) => {
+                startX = e.touches[0].clientX;
+                isDragging = true;
+            });
+
+            swiper.addEventListener('touchmove', (e) => {
+                if (!isDragging) return;
+                moveX = e.touches[0].clientX - startX;
+            });
+
+            swiper.addEventListener('touchend', () => {
+                isDragging = false;
+                if (moveX < -50 && currentIndex < slides.length - 1) {
+                    currentIndex++;
+                } else if (moveX > 50 && currentIndex > 0) {
+                    currentIndex--;
+                }
+                updateSwiper();
+                moveX = 0;
+            });
+
+            // 鼠标拖拽支持
+            swiper.addEventListener('mousedown', (e) => {
+                startX = e.clientX;
+                isDragging = true;
+            });
+
+            swiper.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                moveX = e.clientX - startX;
+            });
+
+            swiper.addEventListener('mouseup', () => {
+                isDragging = false;
+                if (moveX < -50 && currentIndex < slides.length - 1) {
+                    currentIndex++;
+                } else if (moveX > 50 && currentIndex > 0) {
+                    currentIndex--;
+                }
+                updateSwiper();
+                moveX = 0;
+            });
+
+            swiper.addEventListener('mouseleave', () => {
+                isDragging = false;
+            });
+
+            // 初始化轮播位置
+            updateSwiper();
+        }
+
+        // 初始化三个轮播（护航、iOS科技、图片展示）
+        initSwiper('escortSwiper', 'escortDots');
+        initSwiper('techSwiper', 'techDots');
+        initSwiper('imgSwiper', 'imgDots');
+
+        // 点击遮罩关闭弹窗
+        document.getElementById('modalMask').addEventListener('click', () => {
+            hideModal('escortNoticeModal');
+            hideModal('techNoticeModal');
+        });
+
+        // 实时更新时间
         function updateTime() {
             const now = new Date();
             const year = now.getFullYear();
@@ -579,20 +1061,20 @@
         updateTime();
         setInterval(updateTime, 1000);
 
-        // 页面加载完成后执行
-        window.onload = () => {
-            createSnowflakes();
+        // 页面加载完成执行
+        document.addEventListener('DOMContentLoaded', () => {
+            const loader = document.getElementById('loader');
             setTimeout(() => {
-                const loader = document.getElementById("loader");
                 loader.style.opacity = 0;
                 setTimeout(() => {
-                    loader.style.display = "none";
-                    document.querySelectorAll(".animate-item").forEach(item => {
-                        item.classList.add("active");
+                    loader.style.display = 'none';
+                    document.querySelectorAll('.animate-item').forEach(item => {
+                        item.classList.add('active');
                     });
+                    createSnowflakes();
                 }, 300);
             }, 800);
-        };
+        });
     </script>
 </body>
 </html>
