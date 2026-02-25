@@ -1,231 +1,357 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="zh-CN" class="scroll-smooth">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EZ内核 - Supreme iOS Engine</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EZ内核 — 极致稳定 • 精准 • 隐蔽</title>
+  <meta name="description" content="EZ内核 — 多巴胺 Roothide 越狱内核，超强稳定性，自由绘制，实时刷新，隐蔽不封，支持 iOS 15–16.5.1"/>
+  <meta name="robots" content="noindex,nofollow">
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap" rel="stylesheet">
+  <!-- 社交預覽 OG -->
+  <meta property="og:title" content="EZ内核 — 极致稳定 • 精准 • 隐蔽">
+  <meta property="og:description" content="多巴胺 Roothide 越狱内核，超强稳定性，自由绘制，实时刷新，隐蔽不封，支持 iOS 15–16.5.1">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="zh_CN">
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+  <style>
+    :root {
+      --bg: #f5f5f7;
+      --text: #1d1d1f;
+      --gray: #6e6e73;
+      --accent: #0071e3;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #000;
+        --text: #f5f5f7;
+        --gray: #a1a1a6;
+        --accent: #2997ff;
+      }
+    }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+    header {
+      padding: 4rem 0 2rem;
+      text-align: center;
+      position: relative;
+    }
+    #lang-toggle {
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
+      background: rgba(0,0,0,0.08);
+      border: none;
+      border-radius: 999px;
+      padding: 0.6rem 1.2rem;
+      font-size: 0.95rem;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+    }
+    #lang-toggle:hover {
+      background: rgba(0,0,0,0.15);
+    }
+    @media (prefers-color-scheme: dark) {
+      #lang-toggle { background: rgba(255,255,255,0.12); }
+      #lang-toggle:hover { background: rgba(255,255,255,0.2); }
+    }
+    h1, .subtitle, .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 1.2s ease-out;
+    }
+    h1.visible, .subtitle.visible, .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    h1 {
+      font-size: clamp(2.8rem, 7vw, 6rem);
+      font-weight: 600;
+      letter-spacing: -0.04em;
+      margin: 0;
+      background: linear-gradient(to right, var(--accent), #00c4b4);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .subtitle {
+      font-size: 1.4rem;
+      color: var(--gray);
+      margin-top: 0.8rem;
+      max-width: 580px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    section {
+      padding: 5rem 0 3rem;
+    }
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 3rem;
+      margin: 3rem 0;
+    }
+    .gallery-item {
+      text-align: center;
+      opacity: 0;
+      transform: translateY(40px);
+      transition: all 0.9s ease-out;
+    }
+    .gallery-item.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .gallery img {
+      width: 100%;
+      max-height: 460px;
+      object-fit: contain;
+      border-radius: 24px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.22);
+      transition: transform 0.4s ease, box-shadow 0.4s ease;
+    }
+    .gallery img:hover {
+      transform: scale(1.04);
+      box-shadow: 0 30px 70px rgba(0,0,0,0.3);
+    }
+    .gallery-caption {
+      margin-top: 1.2rem;
+      font-size: 1.1rem;
+      font-weight: 500;
+    }
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2.5rem;
+    }
+    .feature-card {
+      padding: 1.8rem;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.06);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.08);
+      transition: all 0.4s ease;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(40px);
+    }
+    .feature-card.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    @media (prefers-color-scheme: light) {
+      .feature-card {
+        background: rgba(0,0,0,0.04);
+        border: 1px solid rgba(0,0,0,0.1);
+      }
+    }
+    .feature-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+    }
+    .feature-title {
+      font-size: 1.4rem;
+      font-weight: 600;
+      margin-bottom: 0.8rem;
+    }
+    .cta {
+      text-align: center;
+      padding: 6rem 0 4rem;
+    }
+    .btn {
+      display: inline-block;
+      background: var(--accent);
+      color: white;
+      font-size: 1.25rem;
+      font-weight: 500;
+      padding: 1rem 2.8rem;
+      border-radius: 9999px;
+      text-decoration: none;
+      transition: all 0.35s ease;
+      box-shadow: 0 10px 30px rgba(0,113,227,0.28);
+    }
+    .btn:hover {
+      transform: translateY(-4px) scale(1.05);
+      box-shadow: 0 20px 50px rgba(0,113,227,0.4);
+    }
+    footer {
+      text-align: center;
+      padding: 3rem 0 4rem;
+      color: var(--gray);
+      font-size: 0.95rem;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
 
-<style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
-body{background:#000;color:#fff;overflow-x:hidden;}
-canvas{position:fixed;top:0;left:0;z-index:-1;}
+    /* 語言切換控制 */
+    [data-lang="en"] .lang-zh,
+    [data-lang="zh"] .lang-en {
+      display: none !important;
+    }
 
-.lang-switch{
-position:fixed;
-top:20px;
-right:30px;
-z-index:10;
-display:flex;
-gap:10px;
-}
-
-.lang-btn{
-padding:8px 18px;
-border-radius:20px;
-border:1px solid rgba(255,255,255,0.3);
-background:rgba(255,255,255,0.05);
-color:#fff;
-cursor:pointer;
-backdrop-filter:blur(10px);
-transition:.3s;
-}
-
-.lang-btn:hover{
-background:linear-gradient(90deg,#00f5ff,#9d4dff);
-color:#000;
-}
-
-section{
-min-height:100vh;
-display:flex;
-justify-content:center;
-align-items:center;
-flex-direction:column;
-padding:60px 20px;
-text-align:center;
-}
-
-h1{
-font-size:5rem;
-font-weight:900;
-background:linear-gradient(90deg,#00f5ff,#9d4dff,#00ffae);
--webkit-background-clip:text;
-color:transparent;
-}
-
-h2{font-size:2.5rem;margin-bottom:20px;}
-p{font-size:1.2rem;opacity:.9;line-height:1.9;max-width:900px;}
-
-.image{
-width:900px;
-height:520px;
-object-fit:cover;
-border-radius:30px;
-margin-top:40px;
-box-shadow:0 50px 120px rgba(0,0,0,.8);
-transition:.8s;
-}
-
-.image:hover{transform:scale(1.05);}
-
-.contact-btn{
-margin-top:50px;
-padding:18px 60px;
-border:none;
-border-radius:50px;
-font-size:1.2rem;
-font-weight:bold;
-cursor:pointer;
-background:linear-gradient(90deg,#00ffae,#00f5ff,#9d4dff);
-color:#000;
-transition:.4s;
-}
-
-.contact-btn:hover{
-transform:scale(1.1);
-box-shadow:0 0 40px #00f5ff;
-}
-
-footer{padding:40px;opacity:.4;}
-</style>
+    /* 手機優化 */
+    @media (max-width:768px) {
+      section {
+        padding: 3rem 0;
+      }
+      .gallery {
+        gap: 1.5rem;
+      }
+      .features {
+        gap: 1.5rem;
+      }
+      .btn {
+        width: 100%;
+        box-sizing: border-box;
+        text-align: center;
+      }
+    }
+  </style>
 </head>
+<body data-lang="zh">
 
-<body>
+  <header>
+    <div class="container">
+      <button id="lang-toggle">English</button>
 
-<div class="lang-switch">
-<button class="lang-btn" onclick="setLang('zh')">中文</button>
-<button class="lang-btn" onclick="setLang('en')">EN</button>
-</div>
+      <h1 class="fade-in lang-zh">EZ内核</h1>
+      <h1 class="fade-in lang-en">EZ Kernel</h1>
 
-<canvas id="bg"></canvas>
+      <p class="subtitle fade-in lang-zh">极致稳定 • 精准读取 • 完全隐蔽<br>专为 iOS 15–16.5.1 打造的多巴胺 Roothide 越狱神器</p>
+      <p class="subtitle fade-in lang-en">Ultimate Stability • Precise Reading • Fully Concealed<br>Powered by Dopamine Roothide Jailbreak for iOS 15–16.5.1</p>
+    </div>
+  </header>
 
-<section>
-<h1 id="title">EZ内核</h1>
-<p id="subtitle">专为 iOS 设备打造的高性能视觉化核心平台</p>
-</section>
+  <section>
+    <div class="container">
+      <div class="gallery">
+        <div class="gallery-item">
+          <img loading="lazy" src="https://i.postimg.cc/4xKtJbcg/24a2adf5b3d414b161264ad3ae51af16.jpg" alt="EZ内核透视绘制">
+          <div class="gallery-caption lang-zh">精准骨骼 & 人物透视，距离实时显示</div>
+          <div class="gallery-caption lang-en">Accurate Skeleton & Player ESP with Real-time Distance</div>
+        </div>
+        <div class="gallery-item">
+          <img loading="lazy" src="https://i.postimg.cc/rwv4z0GX/44e726fac0f639e7eac95e748f2683ff.jpg" alt="EZ内核雷达 & 物资">
+          <div class="gallery-caption lang-zh">高级雷达 & 物资标记，战场一目了然</div>
+          <div class="gallery-caption lang-en">Advanced Radar & Loot ESP, Battlefield Overview</div>
+        </div>
+        <div class="gallery-item">
+          <img loading="lazy" src="https://i.postimg.cc/pLgjyhQM/c6bb7a8fce4f3deac2f8389655002b55.jpg" alt="EZ内核菜单设置">
+          <div class="gallery-caption lang-zh">自由调节菜单，颜色/粗细/开关随心掌控</div>
+          <div class="gallery-caption lang-en">Fully Customizable Menu – Colors, Thickness, Toggles</div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-<section>
-<h2 id="supportTitle">设备支持</h2>
-<p id="supportText">
-支持 iPhone / iPad<br>
-系统范围 iOS 15 – 16.5.1<br><br>
-深度适配不同设备分辨率<br>
-全面优化运行环境
-</p>
-<img class="image" src="https://images.pexels.com/photos/788946/pexels-photo-788946.jpeg">
-</section>
+  <section>
+    <div class="container">
+      <div class="features">
+        <div class="feature-card">
+          <div class="feature-title lang-zh">超强稳定性</div>
+          <div class="feature-title lang-en">Ultra Stability</div>
+          <p class="lang-zh">采用多巴胺 Roothide 越狱内核，数据读取极致稳定，长时间运行零崩溃。</p>
+          <p class="lang-en">Powered by Dopamine Roothide, rock-solid data reading, zero crashes even in long sessions.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-title lang-zh">自由绘制 • 流畅不卡</div>
+          <div class="feature-title lang-en">Free Drawing • Smooth Performance</div>
+          <p class="lang-zh">菜单开关随意调节，绘制颜色自由更改，画面流畅不卡顿。</p>
+          <p class="lang-en">Toggle features freely, customize colors, silky-smooth rendering.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-title lang-zh">实时刷新 • 不漏资源</div>
+          <div class="feature-title lang-en">Real-time Refresh • No Missed Loot</div>
+          <p class="lang-zh">时时刷新机制，不错过任何资源点位，精准即时。</p>
+          <p class="lang-en">Instant refresh, never miss any resource or opportunity.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-title lang-zh">顶级隐蔽 • 安全不封</div>
+          <div class="feature-title lang-en">Top-tier Concealment • Ban Protection</div>
+          <p class="lang-zh">超强隐蔽技术，精准内存调用，稳定无异常，难以被平台检测。</p>
+          <p class="lang-en">Advanced stealth tech, precise memory access, undetectable and safe.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-title lang-zh">完美兼容</div>
+          <div class="feature-title lang-en">Perfect Compatibility</div>
+          <p class="lang-zh">支持 iOS 15 – 16.5.1 全系列设备，必须在多巴胺 Roothide 越狱环境下使用。</p>
+          <p class="lang-en">Supports iOS 15–16.5.1 devices. Requires Dopamine Roothide jailbreak.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-title lang-zh">官方社群 • 值得信赖</div>
+          <div class="feature-title lang-en">Official Community • Trusted by Players</div>
+          <p class="lang-zh">活跃官方交流群，支持一卡三服（国服/台服/国际服），持续更新。</p>
+          <p class="lang-en">Active official group, supports all servers with one key, regular updates.</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
-<section>
-<h2 id="smoothTitle">极致流畅体验</h2>
-<p id="smoothText">
-模块化核心架构<br>
-低资源占用<br>
-高帧率渲染机制<br>
-长时间运行稳定不卡顿
-</p>
-<img class="image" src="https://images.pexels.com/photos/5077048/pexels-photo-5077048.jpeg">
-</section>
+  <section class="cta">
+    <div class="container">
+      <h2 class="fade-in lang-zh" style="font-size: 2.8rem; font-weight: 600; margin-bottom: 1.2rem;">立即加入，体验极致内核</h2>
+      <h2 class="fade-in lang-en" style="font-size: 2.8rem; font-weight: 600; margin-bottom: 1.2rem;">Join Now & Experience the Ultimate Kernel</h2>
 
-<section>
-<h2 id="featureTitle">高度适配与功能扩展</h2>
-<p id="featureText">
-多层信息显示系统<br>
-可自定义颜色与状态样式<br>
-动态数据可视化结构<br>
-高扩展性模块设计
-</p>
-<img class="image" src="https://images.pexels.com/photos/5082579/pexels-photo-5082579.jpeg">
-</section>
+      <a href="https://t.me/EZiospro" class="btn lang-zh" rel="noopener noreferrer">联系我们 • 加入官方群</a>
+      <a href="https://t.me/EZiospro" class="btn lang-en" rel="noopener noreferrer">Contact Us • Join Official Group</a>
+    </div>
+  </section>
 
-<section>
-<h2 id="stableTitle">稳定与安全</h2>
-<p id="stableText">
-优化内存调度机制<br>
-增强系统稳定性<br>
-长时间运行依然流畅
-</p>
+  <footer>
+    <div class="container">
+      <p class="lang-zh">EZ内核 © 2026 — 仅限学习研究用途，请遵守平台规则</p>
+      <p class="lang-en">EZ Kernel © 2026 — For educational purposes only. Comply with all platform rules.</p>
+    </div>
+  </footer>
 
-<button class="contact-btn" id="contactBtn"
-onclick="window.location.href='https://t.me/EZiospro'">
-联系我们
-</button>
-</section>
+  <script>
+    // 語言切換 + 本地持久化
+    const toggle = document.getElementById('lang-toggle');
+    const body = document.body;
 
-<footer>© 2026 EZ Kernel Supreme Edition</footer>
+    // 讀取本地語言
+    const savedLang = localStorage.getItem('site-lang') || 'zh';
+    body.setAttribute('data-lang', savedLang);
+    toggle.textContent = savedLang === 'zh' ? 'English' : '中文';
 
-<script>
-gsap.registerPlugin(ScrollTrigger);
-gsap.utils.toArray("section").forEach(sec=>{
-gsap.from(sec,{
-opacity:0,
-y:120,
-duration:1.5,
-scrollTrigger:{trigger:sec,start:"top 80%"}
-})
-});
+    toggle.addEventListener('click', () => {
+      const current = body.getAttribute('data-lang');
+      const next = current === 'zh' ? 'en' : 'zh';
+      body.setAttribute('data-lang', next);
+      toggle.textContent = next === 'zh' ? 'English' : '中文';
+      localStorage.setItem('site-lang', next);
+    });
 
-function setLang(lang){
-if(lang==="en"){
-title.innerText="EZ Kernel";
-subtitle.innerText="High Performance Visualization Engine for iOS";
-supportTitle.innerText="Device Support";
-supportText.innerHTML="Supports iPhone / iPad<br>iOS 15 – 16.5.1<br><br>Deep device adaptation<br>Optimized runtime environment";
-smoothTitle.innerText="Ultra Smooth Experience";
-smoothText.innerHTML="Modular architecture<br>Low resource usage<br>High frame rendering<br>Stable long-term performance";
-featureTitle.innerText="Advanced Adaptation & Expansion";
-featureText.innerHTML="Multi-layer display system<br>Custom colors & states<br>Dynamic visualization<br>Expandable modules";
-stableTitle.innerText="Stability & Security";
-stableText.innerHTML="Optimized memory scheduling<br>Enhanced stability<br>Smooth long-term runtime";
-contactBtn.innerText="Contact Us";
-}else{
-title.innerText="EZ内核";
-subtitle.innerText="专为 iOS 设备打造的高性能视觉化核心平台";
-supportTitle.innerText="设备支持";
-supportText.innerHTML="支持 iPhone / iPad<br>系统范围 iOS 15 – 16.5.1<br><br>深度适配不同设备分辨率<br>全面优化运行环境";
-smoothTitle.innerText="极致流畅体验";
-smoothText.innerHTML="模块化核心架构<br>低资源占用<br>高帧率渲染机制<br>长时间运行稳定不卡顿";
-featureTitle.innerText="高度适配与功能扩展";
-featureText.innerHTML="多层信息显示系统<br>可自定义颜色与状态样式<br>动态数据可视化结构<br>高扩展性模块设计";
-stableTitle.innerText="稳定与安全";
-stableText.innerHTML="优化内存调度机制<br>增强系统稳定性<br>长时间运行依然流畅";
-contactBtn.innerText="联系我们";
-}
-}
+    // 滾動動畫（只執行一次）
+    const revealElements = document.querySelectorAll('.fade-in, .gallery-item, .feature-card');
 
-/* 粒子背景 */
-const scene=new THREE.Scene();
-const camera=new THREE.PerspectiveCamera(75,window.innerWidth/window.innerHeight,0.1,1000);
-const renderer=new THREE.WebGLRenderer({canvas:bg,alpha:true});
-renderer.setSize(window.innerWidth,window.innerHeight);
+    const reveal = () => {
+      const windowHeight = window.innerHeight;
+      revealElements.forEach(el => {
+        if (el.classList.contains('visible')) return;
+        const rect = el.getBoundingClientRect();
+        if (rect.top < windowHeight - 80) {
+          el.classList.add('visible');
+        }
+      });
+    };
 
-const geometry=new THREE.BufferGeometry();
-const vertices=[];
-for(let i=0;i<8000;i++){
-vertices.push(
-THREE.MathUtils.randFloatSpread(2000),
-THREE.MathUtils.randFloatSpread(2000),
-THREE.MathUtils.randFloatSpread(2000)
-);
-}
-geometry.setAttribute('position',new THREE.Float32BufferAttribute(vertices,3));
-const material=new THREE.PointsMaterial({color:0x00f5ff});
-const particles=new THREE.Points(geometry,material);
-scene.add(particles);
-camera.position.z=600;
+    // 初始載入
+    setTimeout(() => {
+      document.querySelectorAll('.fade-in').forEach(el => el.classList.add('visible'));
+    }, 300);
 
-function animate(){
-requestAnimationFrame(animate);
-particles.rotation.y+=0.0007;
-renderer.render(scene,camera);
-}
-animate();
-</script>
+    window.addEventListener('scroll', reveal);
+    reveal();
+  </script>
 
 </body>
 </html>
