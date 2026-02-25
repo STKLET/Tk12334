@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EZ内核 - Supreme iOS Engine</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap" rel="stylesheet">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
+body{background:#000;color:#fff;overflow-x:hidden;}
+canvas{position:fixed;top:0;left:0;z-index:-1;}
+
+.lang-switch{
+position:fixed;
+top:20px;
+right:30px;
+z-index:10;
+display:flex;
+gap:10px;
+}
+
+.lang-btn{
+padding:8px 18px;
+border-radius:20px;
+border:1px solid rgba(255,255,255,0.3);
+background:rgba(255,255,255,0.05);
+color:#fff;
+cursor:pointer;
+backdrop-filter:blur(10px);
+transition:.3s;
+}
+
+.lang-btn:hover{
+background:linear-gradient(90deg,#00f5ff,#9d4dff);
+color:#000;
+}
+
+section{
+min-height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+flex-direction:column;
+padding:60px 20px;
+text-align:center;
+}
+
+h1{
+font-size:5rem;
+font-weight:900;
+background:linear-gradient(90deg,#00f5ff,#9d4dff,#00ffae);
+-webkit-background-clip:text;
+color:transparent;
+}
+
+h2{font-size:2.5rem;margin-bottom:20px;}
+p{font-size:1.2rem;opacity:.9;line-height:1.9;max-width:900px;}
+
+.image{
+width:900px;
+height:520px;
+object-fit:cover;
+border-radius:30px;
+margin-top:40px;
+box-shadow:0 50px 120px rgba(0,0,0,.8);
+transition:.8s;
+}
+
+.image:hover{transform:scale(1.05);}
+
+.contact-btn{
+margin-top:50px;
+padding:18px 60px;
+border:none;
+border-radius:50px;
+font-size:1.2rem;
+font-weight:bold;
+cursor:pointer;
+background:linear-gradient(90deg,#00ffae,#00f5ff,#9d4dff);
+color:#000;
+transition:.4s;
+}
+
+.contact-btn:hover{
+transform:scale(1.1);
+box-shadow:0 0 40px #00f5ff;
+}
+
+footer{padding:40px;opacity:.4;}
+</style>
+</head>
+
+<body>
+
+<div class="lang-switch">
+<button class="lang-btn" onclick="setLang('zh')">中文</button>
+<button class="lang-btn" onclick="setLang('en')">EN</button>
+</div>
+
+<canvas id="bg"></canvas>
+
+<section>
+<h1 id="title">EZ内核</h1>
+<p id="subtitle">专为 iOS 设备打造的高性能视觉化核心平台</p>
+</section>
+
+<section>
+<h2 id="supportTitle">设备支持</h2>
+<p id="supportText">
+支持 iPhone / iPad<br>
+系统范围 iOS 15 – 16.5.1<br><br>
+深度适配不同设备分辨率<br>
+全面优化运行环境
+</p>
+<img class="image" src="https://images.pexels.com/photos/788946/pexels-photo-788946.jpeg">
+</section>
+
+<section>
+<h2 id="smoothTitle">极致流畅体验</h2>
+<p id="smoothText">
+模块化核心架构<br>
+低资源占用<br>
+高帧率渲染机制<br>
+长时间运行稳定不卡顿
+</p>
+<img class="image" src="https://images.pexels.com/photos/5077048/pexels-photo-5077048.jpeg">
+</section>
+
+<section>
+<h2 id="featureTitle">高度适配与功能扩展</h2>
+<p id="featureText">
+多层信息显示系统<br>
+可自定义颜色与状态样式<br>
+动态数据可视化结构<br>
+高扩展性模块设计
+</p>
+<img class="image" src="https://images.pexels.com/photos/5082579/pexels-photo-5082579.jpeg">
+</section>
+
+<section>
+<h2 id="stableTitle">稳定与安全</h2>
+<p id="stableText">
+优化内存调度机制<br>
+增强系统稳定性<br>
+长时间运行依然流畅
+</p>
+
+<button class="contact-btn" id="contactBtn"
+onclick="window.location.href='https://t.me/EZiospro'">
+联系我们
+</button>
+</section>
+
+<footer>© 2026 EZ Kernel Supreme Edition</footer>
+
+<script>
+gsap.registerPlugin(ScrollTrigger);
+gsap.utils.toArray("section").forEach(sec=>{
+gsap.from(sec,{
+opacity:0,
+y:120,
+duration:1.5,
+scrollTrigger:{trigger:sec,start:"top 80%"}
+})
+});
+
+function setLang(lang){
+if(lang==="en"){
+title.innerText="EZ Kernel";
+subtitle.innerText="High Performance Visualization Engine for iOS";
+supportTitle.innerText="Device Support";
+supportText.innerHTML="Supports iPhone / iPad<br>iOS 15 – 16.5.1<br><br>Deep device adaptation<br>Optimized runtime environment";
+smoothTitle.innerText="Ultra Smooth Experience";
+smoothText.innerHTML="Modular architecture<br>Low resource usage<br>High frame rendering<br>Stable long-term performance";
+featureTitle.innerText="Advanced Adaptation & Expansion";
+featureText.innerHTML="Multi-layer display system<br>Custom colors & states<br>Dynamic visualization<br>Expandable modules";
+stableTitle.innerText="Stability & Security";
+stableText.innerHTML="Optimized memory scheduling<br>Enhanced stability<br>Smooth long-term runtime";
+contactBtn.innerText="Contact Us";
+}else{
+title.innerText="EZ内核";
+subtitle.innerText="专为 iOS 设备打造的高性能视觉化核心平台";
+supportTitle.innerText="设备支持";
+supportText.innerHTML="支持 iPhone / iPad<br>系统范围 iOS 15 – 16.5.1<br><br>深度适配不同设备分辨率<br>全面优化运行环境";
+smoothTitle.innerText="极致流畅体验";
+smoothText.innerHTML="模块化核心架构<br>低资源占用<br>高帧率渲染机制<br>长时间运行稳定不卡顿";
+featureTitle.innerText="高度适配与功能扩展";
+featureText.innerHTML="多层信息显示系统<br>可自定义颜色与状态样式<br>动态数据可视化结构<br>高扩展性模块设计";
+stableTitle.innerText="稳定与安全";
+stableText.innerHTML="优化内存调度机制<br>增强系统稳定性<br>长时间运行依然流畅";
+contactBtn.innerText="联系我们";
+}
+}
+
+/* 粒子背景 */
+const scene=new THREE.Scene();
+const camera=new THREE.PerspectiveCamera(75,window.innerWidth/window.innerHeight,0.1,1000);
+const renderer=new THREE.WebGLRenderer({canvas:bg,alpha:true});
+renderer.setSize(window.innerWidth,window.innerHeight);
+
+const geometry=new THREE.BufferGeometry();
+const vertices=[];
+for(let i=0;i<8000;i++){
+vertices.push(
+THREE.MathUtils.randFloatSpread(2000),
+THREE.MathUtils.randFloatSpread(2000),
+THREE.MathUtils.randFloatSpread(2000)
+);
+}
+geometry.setAttribute('position',new THREE.Float32BufferAttribute(vertices,3));
+const material=new THREE.PointsMaterial({color:0x00f5ff});
+const particles=new THREE.Points(geometry,material);
+scene.add(particles);
+camera.position.z=600;
+
+function animate(){
+requestAnimationFrame(animate);
+particles.rotation.y+=0.0007;
+renderer.render(scene,camera);
+}
+animate();
+</script>
+
+</body>
+</html>
